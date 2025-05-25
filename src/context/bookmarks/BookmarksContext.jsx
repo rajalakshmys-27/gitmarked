@@ -18,11 +18,10 @@ export function BookmarksProvider({ children }) {
   useEffect(() => {
     localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks));
   }, [bookmarks]);
-
   const addBookmark = useCallback((repo) => {
     setBookmarks(prev => {
       if (prev.some(b => b.id === repo.id || b.full_name === repo.full_name)) return prev;
-      return [...prev, repo];
+      return [...prev, { ...repo, bookmarkedAt: new Date().toISOString() }];
     });
   }, []);
 

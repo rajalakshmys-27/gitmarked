@@ -35,7 +35,7 @@ function CSVImport(props, ref) {
         if (res.status === 200) {
           const repo = await res.json();
           if (!existingIds.has(repo.id)) {
-            addBookmark(repo);
+            addBookmark({ ...repo, bookmarkedAt: new Date().toISOString() });
             existingIds.add(repo.id);
             existingNames.add(repo.full_name);
             batchImported++;

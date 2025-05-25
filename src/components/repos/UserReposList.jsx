@@ -35,9 +35,8 @@ export default function UserReposList({ username }) {
       if (toastTimeout.current) clearTimeout(toastTimeout.current);
     };
   }, [username]);
-
   const handleBookmark = (repo) => {
-    addBookmark(repo);
+    addBookmark({ ...repo, bookmarkedAt: new Date().toISOString() });
     setToastMsg('Bookmarked successfully!');
     if (toastTimeout.current) clearTimeout(toastTimeout.current);
     toastTimeout.current = setTimeout(() => setToastMsg(""), 2000);
