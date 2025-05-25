@@ -14,16 +14,23 @@ export default function Bookmarks() {
       ) : (
         <ul className="space-y-4">
           {bookmarks.map(repo => (
-            <li key={repo.id} className="flex items-center justify-between bg-blue-50 dark:bg-gray-800 rounded-lg p-3 shadow border border-blue-100 dark:border-gray-700">
-              <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-700 dark:text-blue-300 hover:underline text-base">{repo.name || repo.full_name}</a>
-              <button
-                className="ml-2 p-1 rounded-full hover:bg-red-100 dark:hover:bg-gray-700 transition"
-                title="Remove Bookmark"
-                onClick={() => removeBookmark(repo.id)}
-                aria-label="Remove Bookmark"
-              >
-                <CloseIcon />
-              </button>
+            <li key={repo.id} className="flex flex-col gap-1 bg-blue-50 dark:bg-gray-800 rounded-lg p-3 shadow border border-blue-100 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-700 dark:text-blue-300 hover:underline text-base">{repo.name || repo.full_name}</a>
+                <button
+                  className="ml-2 p-1 rounded-full hover:bg-red-100 dark:hover:bg-gray-700 transition"
+                  title="Remove Bookmark"
+                  onClick={() => removeBookmark(repo.id)}
+                  aria-label="Remove Bookmark"
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+              {repo.owner && (
+                <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
+                  {typeof repo.owner === 'string' ? repo.owner : repo.owner?.login}
+                </span>
+              )}
             </li>
           ))}
         </ul>

@@ -3,9 +3,10 @@ export default function SuggestionItem({ s: { type, id, login, avatar_url, html_
     <div
       role="option"
       aria-selected={idx === highlightedIndex}
-      key={type + id}
       className={`flex items-center gap-3 cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-800 rounded-lg px-2 py-1 transition ${idx === highlightedIndex ? 'bg-blue-100 dark:bg-gray-700' : ''}`}
-      onClick={() => onSelectSuggestion && onSelectSuggestion({ type, id, login, avatar_url, html_url, name, description, owner, owner_avatar })}
+      onMouseDown={() => {
+        onSelectSuggestion && onSelectSuggestion({ type, id, login, avatar_url, html_url, name, description, owner, owner_avatar });
+      }}
       onMouseEnter={() => setHighlightedIndex(idx)}
     >
       {type === "user" ? (
