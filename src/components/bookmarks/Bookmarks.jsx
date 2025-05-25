@@ -78,26 +78,34 @@ export default function Bookmarks() {
         <div className="text-gray-500 dark:text-gray-400 italic">No bookmarks yet.</div>
       ) : (
         <ul className="space-y-4">
-          {bookmarks.map(repo => (
-            <li key={repo.id} className="flex flex-col gap-1 bg-blue-50 dark:bg-gray-800 rounded-lg p-3 shadow border border-blue-100 dark:border-gray-700">
-              <div className="flex items-center justify-between">
-                <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-700 dark:text-blue-300 hover:underline text-base">{repo.name || repo.full_name}</a>
-                <button
-                  className="ml-2 p-1 rounded-full hover:bg-red-100 dark:hover:bg-gray-700 transition"
-                  title="Remove Bookmark"
-                  onClick={() => removeBookmark(repo.id)}
-                  aria-label="Remove Bookmark"
-                >
-                  <CloseIcon />
-                </button>
-              </div>
-              {repo.owner && (
-                <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
-                  {typeof repo.owner === 'string' ? repo.owner : repo.owner?.login}
-                </span>
-              )}
-            </li>
-          ))}
+          {bookmarks.map(repo => {
+            // Extract owner name from full_name if available
+            const ownerName = repo.full_name ? repo.full_name.split('/')[0] : 
+              (typeof repo.owner === 'string' ? repo.owner : repo.owner?.login);
+
+            return (
+              <li key={repo.id} className="flex flex-col gap-1 bg-blue-50 dark:bg-gray-800 rounded-lg p-3 shadow border border-blue-100 dark:border-gray-700">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-700 dark:text-blue-300 hover:underline text-base block truncate">
+                      {repo.name || repo.full_name?.split('/')[1]}
+                    </a>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 block mt-0.5">
+                      by {ownerName}
+                    </span>
+                  </div>
+                  <button
+                    className="ml-2 p-1 rounded-full hover:bg-red-100 dark:hover:bg-gray-700 transition shrink-0"
+                    title="Remove Bookmark"
+                    onClick={() => removeBookmark(repo.id)}
+                    aria-label="Remove Bookmark"
+                  >
+                    <CloseIcon />
+                  </button>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </aside>
