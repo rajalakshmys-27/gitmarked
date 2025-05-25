@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { BookmarksContext } from './bookmarks-context.js';
 
 const BOOKMARKS_KEY = 'bookmarks';

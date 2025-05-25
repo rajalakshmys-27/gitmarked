@@ -12,7 +12,10 @@ export default function Toast({ message, onClose, duration = 2000 }) {
   if (!message) return null;
 
   return (
-    <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg z-50 animate-fade-in">
+    <div
+      role="status"
+      aria-live="polite"
+      className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg z-50 animate-fade-in">
       {message}
     </div>
   );

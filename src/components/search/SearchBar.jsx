@@ -9,7 +9,6 @@ export default function SearchBar({ value, onChange, onSelectSuggestion }) {
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const debouncedValue = useDebounce(value, 400);
 
-  // Debounced fetch logic (now using debouncedValue)
   useEffect(() => {
     if (!debouncedValue) {
       setSuggestions([]);

@@ -1,20 +1,23 @@
-import { useState } from 'react'
-import { ThemeProvider } from './context/theme/ThemeContext.jsx'
-import { BookmarksProvider } from './context/bookmarks/BookmarksContext.jsx'
-import ThemeToggle from './components/ui/ThemeToggle.jsx'
-import SearchBar from './components/search/SearchBar.jsx'
+import { useState, useCallback } from 'react';
+
+import { ThemeProvider } from './context/theme/ThemeContext.jsx';
+import { BookmarksProvider } from './context/bookmarks/BookmarksContext.jsx';
+
+import ThemeToggle from './components/ui/ThemeToggle.jsx';
+import SearchBar from './components/search/SearchBar.jsx';
 import SearchResults from './components/search/SearchResults.jsx';
 import Bookmarks from './components/bookmarks/Bookmarks.jsx';
-import { getUsernameFromSuggestion } from './utils/getUsernameFromSuggestion.js'
+
+import { getUsernameFromSuggestion } from './utils/getUsernameFromSuggestion.js';
 
 function AppLayout() {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const handleSelectSuggestion = (suggestion) => {
+  const handleSelectSuggestion = useCallback((suggestion) => {
     const username = getUsernameFromSuggestion(suggestion);
     setSelectedUser(username || null);
-  };
+  }, []);
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-100 to-blue-50 dark:from-gray-900 dark:to-gray-800 font-sans transition-colors duration-300">

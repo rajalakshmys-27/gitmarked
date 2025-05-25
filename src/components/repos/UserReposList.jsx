@@ -1,14 +1,15 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from 'react';
 import { useBookmarks } from '../../context/bookmarks/useBookmarks.js';
 import Toast from '../ui/Toast.jsx';
+import { ChevronDownIcon, BookmarkIcon } from '../../icons';
 
 export default function UserReposList({ username }) {
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
+  const [toastMsg, setToastMsg] = useState('');
   const { addBookmark } = useBookmarks();
-  const [toastMsg, setToastMsg] = useState("");
   const toastTimeout = useRef(null);
 
   useEffect(() => {
@@ -16,19 +17,24 @@ export default function UserReposList({ username }) {
     setLoading(true);
     setError(null);
     setRepos([]);
+    
     fetch(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`)
       .then(res => {
         if (!res.ok) throw new Error(`GitHub API error: ${res.status} ${res.statusText}`);
         return res.json();
       })
       .then(data => setRepos(data))
-      .catch(err => setError(err.message || "Failed to fetch repositories"))
+      .catch(err => setError(err.message || 'Failed to fetch repositories'))
       .finally(() => setLoading(false));
+
+    return () => {
+      if (toastTimeout.current) clearTimeout(toastTimeout.current);
+    };
   }, [username]);
 
   const handleBookmark = (repo) => {
     addBookmark(repo);
-    setToastMsg("Bookmarked successfully!");
+    setToastMsg('Bookmarked successfully!');
     if (toastTimeout.current) clearTimeout(toastTimeout.current);
     toastTimeout.current = setTimeout(() => setToastMsg(""), 2000);
   };
@@ -37,7 +43,7 @@ export default function UserReposList({ username }) {
 
   return (
     <div className="mt-8">
-      <Toast message={toastMsg} onClose={() => setToastMsg("")} />
+      <Toast message={toastMsg} onClose={() => setToastMsg('')} />
       <div className="w-full max-w-2xl mx-auto">
         <button
           className="w-full flex items-center justify-between px-6 py-4 bg-blue-100 dark:bg-gray-800 rounded-lg shadow border border-blue-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
@@ -45,12 +51,7 @@ export default function UserReposList({ username }) {
           aria-expanded={open}
         >
           <span className="text-xl font-bold text-blue-700 dark:text-blue-300">{username}'s Public Repositories</span>
-          <svg
-            className={`w-6 h-6 text-blue-700 dark:text-blue-300 transform transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-            fill="none" viewBox="0 0 24 24" stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+          <ChevronDownIcon className={open ? 'rotate-180' : ''} />
         </button>
         <div
           className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-[1000px] opacity-100 mt-2' : 'max-h-0 opacity-0'} bg-white dark:bg-gray-900 rounded-b-lg border-t-0 border border-blue-200 dark:border-gray-700`}
@@ -73,9 +74,7 @@ export default function UserReposList({ username }) {
                   onClick={() => handleBookmark(repo)}
                   aria-label="Bookmark"
                 >
-                  <svg className="w-6 h-6 text-blue-500 dark:text-blue-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M5 5v14l7-7 7 7V5z" />
-                  </svg>
+                  <BookmarkIcon />
                 </button>
               </li>
             ))}
