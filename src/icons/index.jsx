@@ -27,16 +27,17 @@ export function ChevronDownIcon({ className = '', ...props }) {
 
 export function BookmarkIcon({ className = '', ...props }) {
     return (
-        <svg className={`w-6 h-6 text-blue-500 dark:text-blue-300 ${className}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" {...props}>
-            <path d="M5 5v14l7-7 7 7V5z" />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`size-5 dark:stroke-white ${className}`} {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
         </svg>
+
     );
 }
 
 export function BookmarkFilledIcon({ className = '', ...props }) {
     return (
-        <svg className={`h-6 w-6 text-blue-400 dark:text-blue-300 ${className}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" {...props}>
-            <path d="M5 5v14l7-7 7 7V5z" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`size-6 dark:stroke-white ${className}`} {...props}>
+            <path fillRule="evenodd" d="M6 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H6Zm1.5 1.5a.75.75 0 0 0-.75.75V16.5a.75.75 0 0 0 1.085.67L12 15.089l4.165 2.083a.75.75 0 0 0 1.085-.671V5.25a.75.75 0 0 0-.75-.75h-9Z" clipRule="evenodd" />
         </svg>
     );
 }
@@ -51,7 +52,7 @@ export function CloseIcon({ className = '', ...props }) {
 
 export function SearchIcon({ className = '', ...props }) {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`size-6 ${className}`} {...props}>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`size-6 dark:stroke-white ${className}`} {...props}>
             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
         </svg>
     );

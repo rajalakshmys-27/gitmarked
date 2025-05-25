@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import SuggestionItem from "./SuggestionItem";
 import useDebounce from "../../hooks/useDebounce";
 import { getGithubToken } from '../../utils/githubToken.js';
+import { SearchIcon } from '../../icons';
 
 export default function SearchBar({ value, onChange, onSelectSuggestion, suggestionsVisible, setSuggestionsVisible, onClear }) {
   const [suggestions, setSuggestions] = useState([]);
@@ -104,8 +105,10 @@ export default function SearchBar({ value, onChange, onSelectSuggestion, suggest
   }, [suggestions, highlightedIndex, onSelectSuggestion, setSuggestionsVisible]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-4">
-      <div className="relative w-full">
+    <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-4">      <div className="relative w-full">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+          <SearchIcon className="w-5 h-5" />
+        </div>
         <input
           type="text"
           value={value}
@@ -114,7 +117,7 @@ export default function SearchBar({ value, onChange, onSelectSuggestion, suggest
           onBlur={handleBlur}
           onFocus={handleFocus}
           placeholder="Search repositories, users..."
-          className="w-full px-6 py-4 text-lg rounded-2xl border border-gray-300 dark:border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 transition outline-none bg-white dark:bg-gray-800 shadow-lg text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 font-semibold pr-12"
+          className="w-full pl-12 pr-12 py-4 text-lg rounded-2xl border border-gray-300 dark:border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 transition outline-none bg-white dark:bg-gray-800 shadow-lg text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 font-semibold"
           autoFocus
           aria-autocomplete="list"
           aria-controls="search-suggestions-list"
