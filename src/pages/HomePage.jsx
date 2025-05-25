@@ -1,49 +1,67 @@
-import { useState, useCallback } from 'react';
-import SearchBar from '../components/search/SearchBar';
-import SearchResults from '../components/search/SearchResults';
-import Bookmarks from '../components/bookmarks/Bookmarks';
-import { getUsernameFromSuggestion } from '../utils/getUsernameFromSuggestion';
+import { useNavigate } from 'react-router';
 
-function HomePage() {
-    const [search, setSearch] = useState('');
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [suggestionsVisible, setSuggestionsVisible] = useState(true);
+const HomePage = () => {
+    const navigate = useNavigate();
 
-    const handleSelectSuggestion = useCallback((suggestion) => {
-        const username = getUsernameFromSuggestion(suggestion);
-        setSelectedUser(username || null);
-        setSuggestionsVisible(false); // Hide suggestions when a suggestion is selected
-        setSearch(username || ''); // Set the search input to the selected username so results show
-    }, []);
-
-    // Show suggestions again when user types
-    const handleSearchChange = (e) => {
-        setSearch(e.target.value);
-        setSuggestionsVisible(true);
-    };
-
-    const handleClearSearch = () => {
-        setSearch('');
-        setSelectedUser(null);
-        setSuggestionsVisible(false);
+    const handleGetStarted = () => {
+        navigate('/login');
     };
 
     return (
-        <div className="flex flex-col items-center gap-10 max-w-7xl mx-auto py-12 px-4 w-full">
-            <SearchBar
-                value={search}
-                onChange={handleSearchChange}
-                onSelectSuggestion={handleSelectSuggestion}
-                suggestionsVisible={suggestionsVisible}
-                setSuggestionsVisible={setSuggestionsVisible}
-                onClear={handleClearSearch}
-            />
-            <div className="flex flex-col md:flex-row gap-8 w-full mt-6">
-                <SearchResults selectedUser={selectedUser} onClear={handleClearSearch} />
-                <Bookmarks />
+    <div className="min-h-screen p-8">
+        <div className="max-w-6xl mx-auto">
+            <div className="text-center ">
+                <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">Welcome to GitMarked</h1>
+                <p className="text-xl text-gray-700 dark:text-gray-200 mb-8">
+                    Your intelligent GitHub bookmark manager. Save, organize, and discover
+                    repositories with ease.
+                </p>
+            </div>            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div className="aspect-video mb-4">
+                        <img
+                            src="/images/userDashboard.png"
+                            alt="User Dashboard"
+                            className="w-full h-full object-cover rounded-lg"
+                        />
+                    </div>
+                    <h2 className="text-2xl font-semibold mb-3 text-gray-900 dark:text-white">Powerful Dashboard</h2>
+                    <p className="text-base text-gray-700 dark:text-gray-200">
+                        Search for GitHub users and repositories, explore trending projects,
+                        and easily bookmark repositories for later reference.
+                    </p>
+                </div>
+
+                <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div className="aspect-video mb-4">
+                        <img
+                            src="/images/bookmarks.png"
+                            alt="Bookmarks View"
+                            className="w-full h-full object-cover rounded-lg"
+                        />                    </div>
+                    <h2 className="text-2xl font-semibold mb-3 text-gray-900 dark:text-white">Smart Bookmarks</h2>
+                    <p className="text-base text-gray-700 dark:text-gray-200">
+                        Visualize your bookmarked repositories with interactive graphs,
+                        import repositories in bulk, and manage your collection efficiently.
+                    </p>
+                </div>
+            </div>
+
+            <div className="text-center">
+                <p className="text-lg text-gray-700 dark:text-gray-200 mb-2">
+                    Start organizing your GitHub repositories today and never lose track of
+                    important projects again.
+                </p>
+                <button 
+                    onClick={handleGetStarted}
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-base font-semibold py-3 px-8 rounded-lg transition-colors duration-300 transform hover:scale-105 cursor-pointer shadow-lg hover:shadow-xl"
+                >
+                    Get Started
+                </button>
             </div>
         </div>
+    </div>
     );
-}
+};
 
 export default HomePage;
