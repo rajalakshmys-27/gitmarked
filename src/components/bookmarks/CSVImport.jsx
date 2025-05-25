@@ -1,9 +1,11 @@
 import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { useBookmarks } from '../../context/bookmarks/useBookmarks';
-import { getGithubToken } from '../../utils/githubToken.js';
+import { useAuth } from '../../context/auth/useAuth';
+import { batchAddBookmarks } from '../../firebase';
 
 function CSVImport(props, ref) {
-  const { bookmarks, addBookmark } = useBookmarks();
+  const { bookmarks } = useBookmarks();
+  const { user } = useAuth();
   const inputRef = useRef();
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState('');
@@ -15,8 +17,16 @@ function CSVImport(props, ref) {
   const BATCH_DELAY = 800; // ms between batches
 
   const processBatch = async (lines, startIdx, imported, skipped, existingIds, existingNames) => {
+    if (!user) {
+      setError('Please login to import bookmarks.');
+      setImporting(false);
+      return;
+    }
+
+    const batch = [];
     let batchImported = 0;
     let batchSkipped = 0;
+
     for (let i = startIdx; i < Math.min(startIdx + BATCH_SIZE, lines.length); i++) {
       const repoFullName = lines[i];
       if (!repoFullName.includes('/')) {
@@ -27,21 +37,16 @@ function CSVImport(props, ref) {
         batchSkipped++;
         continue;
       }
+
       try {
-        const token = getGithubToken();
-        const res = await fetch(`https://api.github.com/repos/${repoFullName}`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        });
-        if (res.status === 200) {
-          const repo = await res.json();
-          if (!existingIds.has(repo.id)) {
-            addBookmark({ ...repo, bookmarkedAt: new Date().toISOString() });
-            existingIds.add(repo.id);
-            existingNames.add(repo.full_name);
-            batchImported++;
-          } else {
-            batchSkipped++;
-          }
+        const response = await fetch(`https://api.github.com/repos/${repoFullName}`);
+        const repo = await response.json();
+        
+        if (repo.id && !existingIds.has(repo.id.toString())) {
+          batch.push(repo);
+          batchImported++;
+          existingIds.add(repo.id.toString());
+          existingNames.add(repo.full_name);
         } else {
           batchSkipped++;
         }
@@ -49,8 +54,20 @@ function CSVImport(props, ref) {
         batchSkipped++;
       }
     }
+
+    // Add batch to Firebase
+    if (batch.length > 0) {
+      const result = await batchAddBookmarks(user.uid, batch);
+      if (!result.success) {
+        setError('Failed to import some bookmarks.');
+        setImporting(false);
+        return;
+      }
+    }
+
     const totalImported = imported + batchImported;
     const totalSkipped = skipped + batchSkipped;
+
     if (startIdx + BATCH_SIZE < lines.length) {
       setSummary(`${totalImported} repos imported, ${totalSkipped} skipped so far...`);
       setTimeout(() => {
@@ -64,8 +81,13 @@ function CSVImport(props, ref) {
   };
 
   const handleFileChange = (e) => {
+    if (!user) {
+      setError('Please login to import bookmarks.');
+      return;
+    }
+
     setError('');
-    setSummary(''); // Clear previous summary when a new file is selected
+    setSummary('');
     const file = e.target.files[0];
     setSelectedFile(file ? file.name : '');
     if (!file) return;
@@ -78,7 +100,7 @@ function CSVImport(props, ref) {
     reader.onload = (event) => {
       const text = event.target.result;
       const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-      const existingIds = new Set(bookmarks.map(b => b.id));
+      const existingIds = new Set(bookmarks.map(b => b.id.toString()));
       const existingNames = new Set(bookmarks.map(b => b.full_name));
       processBatch(lines, 0, 0, 0, existingIds, existingNames);
     };
@@ -98,6 +120,10 @@ function CSVImport(props, ref) {
       }
     }
   }), []);
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col gap-3 items-stretch w-full mb-6">

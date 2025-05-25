@@ -1,40 +1,87 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BookmarksContext } from './bookmarks-context.js';
-
-const BOOKMARKS_KEY = 'bookmarks';
-
-function getStoredBookmarks() {
-  try {
-    const stored = localStorage.getItem(BOOKMARKS_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch {
-    return [];
-  }
-}
+import { useAuth } from '../auth/useAuth';
+import { 
+  addBookmark as addBookmarkToFirebase,
+  removeBookmark as removeBookmarkFromFirebase,
+  getUserBookmarks as getFirebaseBookmarks,
+  isRepoBookmarked as checkRepoBookmarked
+} from '../../firebase';
 
 export function BookmarksProvider({ children }) {
-  const [bookmarks, setBookmarks] = useState(() => getStoredBookmarks());
+  const [bookmarks, setBookmarks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
+  // Load bookmarks when user changes
   useEffect(() => {
-    localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks));
-  }, [bookmarks]);
-  const addBookmark = useCallback((repo) => {
-    setBookmarks(prev => {
-      if (prev.some(b => b.id === repo.id || b.full_name === repo.full_name)) return prev;
-      return [...prev, { ...repo, bookmarkedAt: new Date().toISOString() }];
-    });
-  }, []);
+    const loadBookmarks = async () => {
+      if (!user) {
+        setBookmarks([]);
+        setLoading(false);
+        return;
+      }
 
-  const removeBookmark = useCallback((repoId) => {
-    setBookmarks(prev => prev.filter(b => b.id !== repoId));
-  }, []);
+      try {
+        const result = await getFirebaseBookmarks(user.uid);
+        if (result.success) {
+          setBookmarks(result.data);
+        }
+      } catch (error) {
+        console.error('Error loading bookmarks:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const clearBookmarks = useCallback(() => {
-    setBookmarks([]);
-  }, []);
+    loadBookmarks();
+  }, [user]);
+
+  const addBookmark = useCallback(async (repo) => {
+    if (!user) return;
+
+    const isAlreadyBookmarked = await checkRepoBookmarked(user.uid, repo.id);
+    if (isAlreadyBookmarked.exists) return;
+
+    const result = await addBookmarkToFirebase(user.uid, repo);
+    if (result.success) {
+      setBookmarks(prev => [...prev, { ...repo, bookmarkedAt: new Date().toISOString() }]);
+    }
+  }, [user]);
+
+  const removeBookmark = useCallback(async (repoId) => {
+    if (!user) return;
+
+    const result = await removeBookmarkFromFirebase(user.uid, repoId);
+    if (result.success) {
+      setBookmarks(prev => prev.filter(b => b.id !== repoId));
+    }
+  }, [user]);
+
+  const clearBookmarks = useCallback(async () => {
+    if (!user) return;
+
+    // Remove all bookmarks one by one
+    const promises = bookmarks.map(bookmark => 
+      removeBookmarkFromFirebase(user.uid, bookmark.id)
+    );
+    
+    try {
+      await Promise.all(promises);
+      setBookmarks([]);
+    } catch (error) {
+      console.error('Error clearing bookmarks:', error);
+    }
+  }, [user, bookmarks]);
 
   return (
-    <BookmarksContext.Provider value={{ bookmarks, addBookmark, removeBookmark, clearBookmarks }}>
+    <BookmarksContext.Provider value={{ 
+      bookmarks, 
+      addBookmark, 
+      removeBookmark, 
+      clearBookmarks,
+      loading 
+    }}>
       {children}
     </BookmarksContext.Provider>
   );

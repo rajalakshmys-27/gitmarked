@@ -1,4 +1,9 @@
-// Utility to get GitHub token from Vite env
+import { config } from '../config/config';
+
+/**
+ * Utility to get GitHub token from configuration
+ * @returns {string|null} GitHub token or null if not set
+ */
 export function getGithubToken() {
-  return import.meta.env.VITE_GITHUB_TOKEN || null;
+  return config.github.token;
 }
