@@ -15,12 +15,13 @@ function BookmarksPage() {
             <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 dark:from-blue-400 dark:via-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">
               Your Bookmarks
             </h1>
-          </div>
-          <div className="flex items-center justify-center space-x-2">
-            <span className="text-lg text-gray-600 dark:text-gray-400">Total Bookmarks:</span>
             <span className="px-4 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full font-bold">
               {bookmarks.length}
             </span>
+          </div>
+          <div className="flex items-center justify-center space-x-2">
+            {/* <span className="text-lg text-gray-600 dark:text-gray-400">Total Bookmarks:</span> */}
+            
             {bookmarks.length > 0 && (
               <button
                 onClick={clearBookmarks}
