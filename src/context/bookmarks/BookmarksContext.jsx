@@ -30,8 +30,12 @@ export function BookmarksProvider({ children }) {
     setBookmarks(prev => prev.filter(b => b.id !== repoId));
   }, []);
 
+  const clearBookmarks = useCallback(() => {
+    setBookmarks([]);
+  }, []);
+
   return (
-    <BookmarksContext.Provider value={{ bookmarks, addBookmark, removeBookmark }}>
+    <BookmarksContext.Provider value={{ bookmarks, addBookmark, removeBookmark, clearBookmarks }}>
       {children}
     </BookmarksContext.Provider>
   );
