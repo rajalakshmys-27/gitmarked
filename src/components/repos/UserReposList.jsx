@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useBookmarks } from '../../context/bookmarks/useBookmarks.js';
 import Toast from '../ui/Toast.jsx';
 import { ChevronDownIcon, BookmarkIcon } from '../../icons';
+import { getGithubToken } from '../../utils/githubToken.js';
 
 export default function UserReposList({ username }) {
   const [repos, setRepos] = useState([]);
@@ -18,7 +19,10 @@ export default function UserReposList({ username }) {
     setError(null);
     setRepos([]);
     
-    fetch(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`)
+    const token = getGithubToken();
+    fetch(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
       .then(res => {
         if (!res.ok) throw new Error(`GitHub API error: ${res.status} ${res.statusText}`);
         return res.json();

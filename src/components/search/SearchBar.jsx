@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import SuggestionItem from "./SuggestionItem";
 import useDebounce from "../../hooks/useDebounce";
+import { getGithubToken } from '../../utils/githubToken.js';
 
 export default function SearchBar({ value, onChange, onSelectSuggestion, suggestionsVisible, setSuggestionsVisible, onClear }) {
   const [suggestions, setSuggestions] = useState([]);
@@ -20,9 +21,11 @@ export default function SearchBar({ value, onChange, onSelectSuggestion, suggest
     setError(null);
     (async () => {
       try {
+        const token = getGithubToken();
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
         const [usersRes, reposRes] = await Promise.all([
-          fetch(`https://api.github.com/search/users?q=${encodeURIComponent(debouncedValue)}&per_page=5`),
-          fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(debouncedValue)}&per_page=5`)
+          fetch(`https://api.github.com/search/users?q=${encodeURIComponent(debouncedValue)}&per_page=5`, { headers }),
+          fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(debouncedValue)}&per_page=5`, { headers })
         ]);
         let errorDetail = "";
         if (!usersRes.ok) {

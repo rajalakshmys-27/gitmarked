@@ -1,5 +1,6 @@
 import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { useBookmarks } from '../../context/bookmarks/useBookmarks';
+import { getGithubToken } from '../../utils/githubToken.js';
 
 function CSVImport(props, ref) {
   const { bookmarks, addBookmark } = useBookmarks();
@@ -7,6 +8,7 @@ function CSVImport(props, ref) {
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState('');
   const [summary, setSummary] = useState('');
+  const [selectedFile, setSelectedFile] = useState('');
 
   // Batch size for async processing
   const BATCH_SIZE = 5;
@@ -26,7 +28,10 @@ function CSVImport(props, ref) {
         continue;
       }
       try {
-        const res = await fetch(`https://api.github.com/repos/${repoFullName}`);
+        const token = getGithubToken();
+        const res = await fetch(`https://api.github.com/repos/${repoFullName}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
         if (res.status === 200) {
           const repo = await res.json();
           if (!existingIds.has(repo.id)) {
@@ -62,6 +67,7 @@ function CSVImport(props, ref) {
     setError('');
     setSummary(''); // Clear previous summary when a new file is selected
     const file = e.target.files[0];
+    setSelectedFile(file ? file.name : '');
     if (!file) return;
     if (!file.name.endsWith('.csv')) {
       setError('Please upload a .csv file.');
@@ -84,23 +90,36 @@ function CSVImport(props, ref) {
   };
 
   useImperativeHandle(ref, () => ({
-    clearSummary: () => setSummary('')
+    clearSummary: () => {
+      setSummary('');
+      setSelectedFile('');
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
+    }
   }), []);
 
   return (
-    <div className="flex flex-col gap-2 items-start">
-      <label className="font-semibold">Import Bookmarks from CSV</label>
-      <input
-        ref={inputRef}
-        type="file"
-        accept=".csv"
-        onChange={handleFileChange}
-        disabled={importing}
-        className="block text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-      />
-      {importing && <span className="text-blue-600">Importing...</span>}
-      {summary && <span className="text-green-700">{summary}</span>}
-      {error && <span className="text-red-600">{error}</span>}
+    <div className="flex flex-col gap-3 items-stretch w-full mb-6">
+      <label className="font-semibold text-blue-700 dark:text-blue-200 mb-1">Import Bookmarks from CSV</label>
+      <div className="flex items-center gap-3">
+        <label htmlFor="csv-upload" className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 dark:file:bg-gray-800 dark:file:text-blue-200 hover:file:bg-blue-100 dark:hover:file:bg-gray-700 transition cursor-pointer bg-blue-100 dark:bg-gray-800 text-blue-700 dark:text-blue-200 px-4 py-2 rounded-lg font-semibold border border-blue-200 dark:border-gray-700 shadow">
+          Choose File
+          <input
+            id="csv-upload"
+            ref={inputRef}
+            type="file"
+            accept=".csv"
+            onChange={handleFileChange}
+            disabled={importing}
+            className="hidden"
+          />
+        </label>
+        <span className="text-sm text-gray-700 dark:text-gray-200 min-w-0 truncate max-w-[160px]">{selectedFile || "No file chosen"}</span>
+      </div>
+      {importing && <span className="text-blue-600 dark:text-blue-300 font-medium">Importing...</span>}
+      {summary && <span className="text-green-700 dark:text-green-400 font-medium">{summary}</span>}
+      {error && <span className="text-red-600 dark:text-red-400 font-medium">{error}</span>}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import CSVImport from './CSVImport.jsx';
 import { useBookmarks } from '../../context/bookmarks/useBookmarks';
 import { BookmarkFilledIcon, CloseIcon, TrashIcon } from '../../icons';
@@ -6,6 +6,13 @@ import { BookmarkFilledIcon, CloseIcon, TrashIcon } from '../../icons';
 export default function Bookmarks() {
   const { bookmarks, removeBookmark, clearBookmarks } = useBookmarks();
   const csvImportRef = useRef();
+
+  // Clear CSVImport summary if all bookmarks are removed (even one by one)
+  useEffect(() => {
+    if (bookmarks.length === 0 && csvImportRef.current) {
+      csvImportRef.current.clearSummary?.();
+    }
+  }, [bookmarks]);
 
   // Handler to clear all bookmarks and also clear the summary in CSVImport
   const handleClearAll = () => {
@@ -34,7 +41,9 @@ export default function Bookmarks() {
           </button>
         )}
       </h2>
-      <CSVImport ref={csvImportRef} />
+      <div className="mb-6">
+        <CSVImport ref={csvImportRef} />
+      </div>
       {bookmarks.length === 0 ? (
         <div className="text-gray-500 dark:text-gray-400 italic">No bookmarks yet.</div>
       ) : (
