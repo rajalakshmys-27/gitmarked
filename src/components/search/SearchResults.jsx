@@ -1,4 +1,4 @@
-import UserReposList from './UserReposList.jsx'
+import UserReposList from '../repos/UserReposList.jsx'
 
 export default function SearchResults({ selectedUser }) {
   return (

@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useBookmarks } from '../../context/bookmarks/useBookmarks.js';
+import Toast from '../ui/Toast.jsx';
 
 export default function UserReposList({ username }) {
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
+  const { addBookmark } = useBookmarks();
+  const [toastMsg, setToastMsg] = useState("");
+  const toastTimeout = useRef(null);
 
   useEffect(() => {
     if (!username) return;
@@ -21,10 +26,18 @@ export default function UserReposList({ username }) {
       .finally(() => setLoading(false));
   }, [username]);
 
+  const handleBookmark = (repo) => {
+    addBookmark(repo);
+    setToastMsg("Bookmarked successfully!");
+    if (toastTimeout.current) clearTimeout(toastTimeout.current);
+    toastTimeout.current = setTimeout(() => setToastMsg(""), 2000);
+  };
+
   if (!username) return null;
 
   return (
     <div className="mt-8">
+      <Toast message={toastMsg} onClose={() => setToastMsg("")} />
       <div className="w-full max-w-2xl mx-auto">
         <button
           className="w-full flex items-center justify-between px-6 py-4 bg-blue-100 dark:bg-gray-800 rounded-lg shadow border border-blue-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
@@ -49,9 +62,21 @@ export default function UserReposList({ username }) {
           )}
           <ul className="space-y-4 px-6 py-4">
             {repos.map(repo => (
-              <li key={repo.id} className="bg-blue-50 dark:bg-gray-800 rounded-lg p-4 shadow border border-blue-100 dark:border-gray-700">
-                <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-700 dark:text-blue-300 hover:underline text-lg">{repo.name}</a>
-                {repo.description && <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">{repo.description}</p>}
+              <li key={repo.id} className="bg-blue-50 dark:bg-gray-800 rounded-lg p-4 shadow border border-blue-100 dark:border-gray-700 flex items-start justify-between gap-4">
+                <div>
+                  <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-700 dark:text-blue-300 hover:underline text-lg">{repo.name}</a>
+                  {repo.description && <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">{repo.description}</p>}
+                </div>
+                <button
+                  className="ml-2 p-2 rounded-full hover:bg-blue-200 dark:hover:bg-gray-700 transition"
+                  title="Bookmark"
+                  onClick={() => handleBookmark(repo)}
+                  aria-label="Bookmark"
+                >
+                  <svg className="w-6 h-6 text-blue-500 dark:text-blue-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M5 5v14l7-7 7 7V5z" />
+                  </svg>
+                </button>
               </li>
             ))}
           </ul>

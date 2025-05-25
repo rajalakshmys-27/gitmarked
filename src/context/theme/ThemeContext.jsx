@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ThemeContext } from './ThemeContext'
+import { ThemeContext } from './theme-context.js'
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {

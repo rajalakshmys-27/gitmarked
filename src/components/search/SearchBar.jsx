@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import SuggestionItem from "./SuggestionItem";
-import useDebounce from "../hooks/useDebounce";
+import useDebounce from "../../hooks/useDebounce";
 
 export default function SearchBar({ value, onChange, onSelectSuggestion }) {
   const [suggestions, setSuggestions] = useState([]);

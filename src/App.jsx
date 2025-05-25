@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { ThemeProvider } from './context/theme-context'
-import ThemeToggle from './components/ThemeToggle.jsx'
-import SearchBar from './components/SearchBar.jsx'
-import SearchResults from './components/SearchResults.jsx';
-import Bookmarks from './components/Bookmarks.jsx';
-import { getUsernameFromSuggestion } from './components/getUsernameFromSuggestion.js'
+import { ThemeProvider } from './context/theme/ThemeContext.jsx'
+import { BookmarksProvider } from './context/bookmarks/BookmarksContext.jsx'
+import ThemeToggle from './components/ui/ThemeToggle.jsx'
+import SearchBar from './components/search/SearchBar.jsx'
+import SearchResults from './components/search/SearchResults.jsx';
+import Bookmarks from './components/bookmarks/Bookmarks.jsx';
+import { getUsernameFromSuggestion } from './utils/getUsernameFromSuggestion.js'
 
 function AppLayout() {
   const [search, setSearch] = useState("");
@@ -38,7 +39,9 @@ function AppLayout() {
 function App() {
   return (
     <ThemeProvider>
-      <AppLayout />
+      <BookmarksProvider>
+        <AppLayout />
+      </BookmarksProvider>
     </ThemeProvider>
   )
 }
