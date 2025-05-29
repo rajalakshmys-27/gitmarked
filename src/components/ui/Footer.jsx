@@ -3,8 +3,8 @@ import { FaGithub, FaLinkedin, FaEnvelope, FaGlobe } from 'react-icons/fa';
 function Footer() {
     const year = new Date().getFullYear();
     return (
-        <footer className="w-full px-4 py-6 bg-slate-100/80 dark:bg-gray-900/90 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-500" style={{ borderTop: 'none' }}>
-            <div className="flex items-center gap-3 text-base font-medium">
+        <footer className="w-full px-2 sm:px-4 py-4 sm:py-6 bg-slate-100/80 dark:bg-gray-900/90 flex flex-col md:flex-row items-center justify-between gap-2 sm:gap-4 transition-all duration-500 text-center md:text-left" style={{ borderTop: 'none' }}>
+            <div className="flex items-center gap-2 sm:gap-3 text-base font-medium">
                 <span className="font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-fuchsia-500 to-amber-400 dark:from-blue-300 dark:via-fuchsia-400 dark:to-yellow-200 bg-clip-text text-transparent select-none transition-all duration-500">
                     Rajalakshmy S
                 </span>
@@ -15,7 +15,7 @@ function Footer() {
                     Built with <span className="text-pink-500">❤️</span> using React &amp; Vite
                 </span>
             </div>
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-3 sm:gap-5 mt-2 md:mt-0">
                 <a
                     href="https://www.linkedin.com/in/rajalakshmy-s-2709/"
                     target="_blank"

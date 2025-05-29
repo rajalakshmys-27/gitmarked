@@ -45,34 +45,34 @@ export default function UserReposList({ username }) {
   if (!username) return null;
 
   return (
-    <div className="mt-8">
+    <div className="mt-6 sm:mt-8">
       <Toast message={toastMsg} onClose={() => setToastMsg('')} />
-      <div className="w-full max-w-2xl mx-auto">
+      <div className="w-full max-w-xs sm:max-w-2xl mx-auto">
         <button
-          className="w-full flex items-center justify-between px-6 py-4 bg-blue-100 dark:bg-gray-800 rounded-lg shadow border border-blue-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+          className="w-full flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-blue-100 dark:bg-gray-800 rounded-lg shadow border border-blue-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
           onClick={() => setOpen(o => !o)}
           aria-expanded={open}
         >
-          <span className="text-xl font-bold text-blue-700 dark:text-blue-300">{username}'s Public Repositories</span>
+          <span className="text-lg sm:text-xl font-bold text-blue-700 dark:text-blue-300">{username}'s Public Repositories</span>
           <ChevronDownIcon className={open ? 'rotate-180' : ''} />
         </button>
         <div
           className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-[1000px] opacity-100 mt-2' : 'max-h-0 opacity-0'} bg-white dark:bg-gray-900 rounded-b-lg border-t-0 border border-blue-200 dark:border-gray-700`}
         >
-          {loading && <div className="text-gray-400 dark:text-gray-500 italic px-6 py-4">Loading repositories...</div>}
-          {error && <div className="text-red-500 italic px-6 py-4">{error}</div>}
+          {loading && <div className="text-gray-400 dark:text-gray-500 italic px-4 sm:px-6 py-3 sm:py-4">Loading repositories...</div>}
+          {error && <div className="text-red-500 italic px-4 sm:px-6 py-3 sm:py-4">{error}</div>}
           {!loading && !error && repos.length === 0 && (
-            <div className="text-gray-400 dark:text-gray-500 italic px-6 py-4">No public repositories found.</div>
+            <div className="text-gray-400 dark:text-gray-500 italic px-4 sm:px-6 py-3 sm:py-4">No public repositories found.</div>
           )}
-          <ul className="space-y-4 px-6 py-4">
+          <ul className="space-y-2 sm:space-y-4 px-4 sm:px-6 py-3 sm:py-4">
             {repos.map(repo => (
-              <li key={repo.id} className="bg-blue-50 dark:bg-gray-800 rounded-lg p-4 shadow border border-blue-100 dark:border-gray-700 flex items-start justify-between gap-4">
+              <li key={repo.id} className="bg-blue-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4 shadow border border-blue-100 dark:border-gray-700 flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-4">
                 <div>
-                  <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-700 dark:text-blue-300 hover:underline text-lg">{repo.name}</a>
-                  {repo.description && <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">{repo.description}</p>}
+                  <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-700 dark:text-blue-300 hover:underline text-base sm:text-lg">{repo.name}</a>
+                  {repo.description && <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm mt-1">{repo.description}</p>}
                 </div>
                 <button
-                  className="ml-2 p-2 rounded-full hover:bg-blue-200 dark:hover:bg-gray-700 transition"
+                  className="ml-0 sm:ml-2 p-2 rounded-full hover:bg-blue-200 dark:hover:bg-gray-700 transition"
                   title="Bookmark"
                   onClick={() => handleBookmark(repo)}
                   aria-label="Bookmark"

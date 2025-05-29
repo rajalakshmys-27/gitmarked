@@ -35,10 +35,10 @@ export default function Bookmarks() {
   }
 
   return (
-    <aside className="w-full md:w-1/3 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg p-8 min-h-[350px] border border-blue-100 dark:border-gray-800">
+    <aside className="w-full md:w-1/3 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg p-4 sm:p-8 min-h-[250px] sm:min-h-[350px] border border-blue-100 dark:border-gray-800 mt-4 md:mt-0">
       <div
         onClick={() => navigate('/bookmarks')}
-        className="text-2xl font-semibold text-blue-700 dark:text-blue-300 mb-4 flex items-center justify-between gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+        className="text-xl sm:text-2xl font-semibold text-blue-700 dark:text-blue-300 mb-2 sm:mb-4 flex items-center justify-between gap-1 sm:gap-2 cursor-pointer hover:opacity-80 transition-opacity"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
@@ -48,16 +48,16 @@ export default function Bookmarks() {
           }
         }}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <BookmarkFilledIcon />
           Bookmarks
-          <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+          <span className="ml-1 sm:ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
             {bookmarks.length}
           </span>
         </div>
         {bookmarks.length > 0 && (
           <button
-            className="ml-2 p-1 rounded-full hover:bg-red-100 dark:hover:bg-gray-700 transition"
+            className="ml-1 sm:ml-2 p-1 rounded-full hover:bg-red-100 dark:hover:bg-gray-700 transition"
             title="Clear All Bookmarks"
             onClick={(e) => {
               e.stopPropagation();
@@ -69,7 +69,7 @@ export default function Bookmarks() {
           </button>
         )}
       </div>
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <CSVImport ref={csvImportRef} />
       </div>
       {loading ? (
@@ -79,7 +79,7 @@ export default function Bookmarks() {
       ) : bookmarks.length === 0 ? (
         <div className="text-gray-500 dark:text-gray-400 italic">No bookmarks yet.</div>
       ) : (
-        <ul className="space-y-4">
+        <ul className="space-y-2 sm:space-y-4">
           {bookmarks.map(repo => {
             // Extract owner name from full_name if available
             const ownerName = repo.full_name ? repo.full_name.split('/')[0] :

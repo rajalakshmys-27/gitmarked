@@ -33,9 +33,9 @@ export default function BookmarkGraph() {
   }
 
   return (
-    <div className="w-full bg-white/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-blue-100/50 dark:border-gray-700/50">
-      <h2 className="text-2xl font-semibold text-blue-700 dark:text-blue-300 mb-6">Bookmarking Activity</h2>
-      <div className="w-full h-[300px]">
+    <div className="w-full bg-white/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-3xl p-4 sm:p-8 shadow-xl border border-blue-100/50 dark:border-gray-700/50">
+      <h2 className="text-xl sm:text-2xl font-semibold text-blue-700 dark:text-blue-300 mb-4 sm:mb-6">Bookmarking Activity</h2>
+      <div className="w-full h-[200px] sm:h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 30 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
