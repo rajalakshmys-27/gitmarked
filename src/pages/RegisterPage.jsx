@@ -16,7 +16,7 @@ const RegisterPage = () => {
     setError(null);
 
     const { user, error: signUpError } = await signUp(email, password);
-    
+
     if (signUpError) {
       setError(signUpError.message);
       return;
@@ -29,8 +29,8 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-blue-100 dark:border-gray-700">
+    <div className="min-h-screen flex flex-col justify-center items-center pt-20 px-4 md:px-8">
+      <div className="w-full max-w-md bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-xl p-8 backdrop-blur-lg border border-gray-200 dark:border-gray-800">
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Register</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -78,7 +78,7 @@ const RegisterPage = () => {
           )}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-150"
+            className="w-full py-3 px-6 rounded-full bg-blue-600 dark:bg-blue-500 text-white font-semibold text-base shadow hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
           >
             Register
           </button>

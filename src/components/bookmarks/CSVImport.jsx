@@ -41,7 +41,7 @@ function CSVImport(props, ref) {
       try {
         const response = await fetch(`https://api.github.com/repos/${repoFullName}`);
         const repo = await response.json();
-        
+
         if (repo.id && !existingIds.has(repo.id.toString())) {
           batch.push(repo);
           batchImported++;
@@ -128,7 +128,7 @@ function CSVImport(props, ref) {
   return (
     <div className="flex flex-col gap-3 items-stretch w-full mb-6">
       <label className="font-semibold text-blue-700 dark:text-blue-200 mb-1">Import Bookmarks from CSV</label>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center justify-center gap-3">
         <label htmlFor="csv-upload" className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 dark:file:bg-gray-800 dark:file:text-blue-200 hover:file:bg-blue-100 dark:hover:file:bg-gray-700 transition cursor-pointer bg-blue-100 dark:bg-gray-800 text-blue-700 dark:text-blue-200 px-4 py-2 rounded-lg font-semibold border border-blue-200 dark:border-gray-700 shadow">
           Choose File
           <input

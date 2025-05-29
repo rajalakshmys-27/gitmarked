@@ -25,13 +25,13 @@ function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-8">
-            <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-blue-100 dark:border-gray-700">
+        <div className="min-h-screen flex flex-col justify-center items-center pt-8 px-4">
+            <div className="w-full max-w-md bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-xl p-8 backdrop-blur-lg border border-gray-200 dark:border-gray-800">
                 <h1 className="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-white">Login</h1>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                        <input 
+                        <input
                             type="email"
                             id="email"
                             value={email}
@@ -43,7 +43,7 @@ function LoginPage() {
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                         <div className="relative">
-                            <input 
+                            <input
                                 type={showPassword ? "text" : "password"}
                                 id="password"
                                 value={password}
@@ -74,7 +74,7 @@ function LoginPage() {
                     )}
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-150"
+                        className="w-full py-3 px-6 rounded-full bg-blue-600 dark:bg-blue-500 text-white font-semibold text-base shadow hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
                     >
                         Login
                     </button>

@@ -6,3 +6,13 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+:root {
+  --footer-icon-color: #374151;
+  /* dark gray for light theme */
+}
+
+.dark {
+  --footer-icon-color: #f3f4f6;
+  /* light gray for dark theme */
+}

@@ -29,7 +29,7 @@ function DashboardPage() {
     };
 
     return (
-        <div className="flex flex-col items-center gap-10 max-w-7xl mx-auto py-12 px-4 w-full">
+        <div className="pt-8 md:pt-12 flex flex-col items-center gap-8">
             <SearchBar
                 value={search}
                 onChange={handleSearchChange}

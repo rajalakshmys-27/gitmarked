@@ -38,7 +38,7 @@ export default function Bookmarks() {
     <aside className="w-full md:w-1/3 bg-gradient-to-br from-blue-100 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg p-8 min-h-[350px] border border-blue-100 dark:border-gray-800">
       <div
         onClick={() => navigate('/bookmarks')}
-        className="text-2xl font-semibold text-blue-700 dark:text-blue-300 mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+        className="text-2xl font-semibold text-blue-700 dark:text-blue-300 mb-4 flex items-center justify-between gap-2 cursor-pointer hover:opacity-80 transition-opacity"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
@@ -48,11 +48,13 @@ export default function Bookmarks() {
           }
         }}
       >
-        <BookmarkFilledIcon />
-        Bookmarks
-        <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-          {bookmarks.length}
-        </span>
+        <div className="flex items-center gap-2">
+          <BookmarkFilledIcon />
+          Bookmarks
+          <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+            {bookmarks.length}
+          </span>
+        </div>
         {bookmarks.length > 0 && (
           <button
             className="ml-2 p-1 rounded-full hover:bg-red-100 dark:hover:bg-gray-700 transition"
@@ -80,7 +82,7 @@ export default function Bookmarks() {
         <ul className="space-y-4">
           {bookmarks.map(repo => {
             // Extract owner name from full_name if available
-            const ownerName = repo.full_name ? repo.full_name.split('/')[0] : 
+            const ownerName = repo.full_name ? repo.full_name.split('/')[0] :
               (typeof repo.owner === 'string' ? repo.owner : repo.owner?.login);
 
             return (

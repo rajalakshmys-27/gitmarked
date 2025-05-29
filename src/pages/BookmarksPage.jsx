@@ -8,7 +8,7 @@ function BookmarksPage() {
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4">
-      <div className="flex flex-col items-center space-y-8">
+      <div className="pt-8 md:pt-12 flex flex-col items-center gap-8">
         <div className="text-center space-y-6 w-full">
           <div className="flex flex-col items-center gap-2">
             <div className="flex items-center gap-3">
