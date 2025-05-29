@@ -1,4 +1,3 @@
-import Bookmarks from '../components/bookmarks/Bookmarks';
 import { BookmarkFilledIcon, TrashIcon, CloseIcon } from '../icons';
 import { useBookmarks } from '../context/bookmarks/useBookmarks';
 import CSVImport from '../components/bookmarks/CSVImport';
@@ -15,10 +14,10 @@ function BookmarksPage() {
             <div className="flex items-center gap-3">
               <BookmarkFilledIcon className="w-10 h-10" />
               <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 dark:from-blue-400 dark:via-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">
-                GitHub Stars Vault
+                GitHub Bookmarks
               </h1>
             </div>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">Your curated collection of remarkable repositories</p>
+            <p className="text-gray-600 dark:text-gray-300 text-md">Your curated collection of remarkable repositories</p>
           </div>
           <div className="flex justify-center w-full">
             <div className="w-full max-w-lg mx-auto bg-white/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-2xl p-6 shadow-lg border border-blue-100/50 dark:border-gray-700/50">
@@ -34,16 +33,18 @@ function BookmarksPage() {
               <BookmarkGraph />
             </div>
           )}
-          
+
           {/* Bookmarks list takes full width if no bookmarks, otherwise sits in the right column on desktop */}
           <div className={`w-full order-1 lg:order-2 ${bookmarks.length === 0 ? 'lg:col-span-2' : ''}`}>
             <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-blue-100/50 dark:border-gray-700/50">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Saved Repositories</h2>
                 <div className="flex items-center gap-4">
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Saved Repositories</h2>
                   <span className="px-4 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full font-bold">
                     {bookmarks.length}
                   </span>
+                </div>
+                <div className="flex items-center gap-4">
                   {bookmarks.length > 0 && (
                     <button
                       onClick={clearBookmarks}
@@ -59,7 +60,7 @@ function BookmarksPage() {
               <ul className="space-y-4">
                 {bookmarks.map(repo => {
                   // Extract owner name from full_name if available
-                  const ownerName = repo.full_name ? repo.full_name.split('/')[0] : 
+                  const ownerName = repo.full_name ? repo.full_name.split('/')[0] :
                     (typeof repo.owner === 'string' ? repo.owner : repo.owner?.login);
 
                   return (
