@@ -104,7 +104,7 @@ function Navbar() {
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
-                        <div className="flex flex-col gap-6 mt-16 px-6 bg-gray-100/90 dark:bg-gray-800/90">
+                        <div className="flex flex-col gap-6 mt-16 pt-4 px-6 bg-gray-100/90 dark:bg-gray-800/90">
                             {user ? (
                                 <>
                                     <div className="flex flex-row mt-2 items-center justify-between">
@@ -116,8 +116,8 @@ function Navbar() {
                                 </>
                             ) : (
                                 <>
-                                    <Link to="/login" className="block px-4 py-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-200 bg-white/80 dark:bg-gray-900/80 hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-600 dark:hover:text-blue-400 shadow transition-colors duration-300">Login</Link>
-                                    <Link to="/register" className="block px-4 py-3 rounded text-lg font-semibold text-gray-700 dark:text-gray-200 bg-white/80 dark:bg-gray-900/80 hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-600 dark:hover:text-blue-400 shadow transition-colors duration-300">Register</Link>
+                                    <Link to="/login" className={`block px-4 py-3 rounded text-lg font-semibold transition-colors duration-300 ${location.pathname === '/login' ? 'text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'}`}>Login</Link>
+                                    <Link to="/register" className={`block px-4 py-3 rounded text-lg font-semibold transition-colors duration-300 ${location.pathname === '/register' ? 'text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'}`}>Register</Link>
                                 </>
                             )}
                         </div>
