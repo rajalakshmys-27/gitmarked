@@ -14,7 +14,6 @@
 }
 
 body {
-  /* Remove min-height here, will use custom property in App.jsx */
   margin: 0;
   min-width: 320px;
 }
