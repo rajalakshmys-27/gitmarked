@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router';
-import setVh from './utils/setVh.js';
+import setVh from './utils/setViewportHeight.js';
 import Navbar from './components/ui/Navbar.jsx';
 import { ThemeProvider } from './context/theme/ThemeContext.jsx';
 import { BookmarksProvider } from './context/bookmarks/BookmarksContext.jsx';
