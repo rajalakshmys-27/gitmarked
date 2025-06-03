@@ -4,6 +4,11 @@
 /* Add this to handle mobile viewport height issues */
 :root {
   --vh: 100vh;
+  --footer-icon-color: #374151; /* dark gray for light theme */
+}
+
+.dark {
+  --footer-icon-color: #f3f4f6; /* light gray for dark theme */
 }
 
 @media (max-width: 768px) {
@@ -13,17 +18,17 @@
   }
 }
 
+html, body {
+  background-color: #f1f5f9; /* Tailwind's slate-100 (light mode) */
+  color-scheme: light dark;
+}
+
+.dark html,
+.dark body {
+  background-color: #1f2937; /* Tailwind's gray-800 (dark mode) */
+}
+
 body {
   margin: 0;
   min-width: 320px;
-}
-
-:root {
-  --footer-icon-color: #374151;
-  /* dark gray for light theme */
-}
-
-.dark {
-  --footer-icon-color: #f3f4f6;
-  /* light gray for dark theme */
 }
