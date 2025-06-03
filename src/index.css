@@ -19,16 +19,9 @@
 }
 
 html, body {
-  background-color: #f1f5f9; /* Tailwind's slate-100 (light mode) */
-  color-scheme: light dark;
-}
-
-.dark html,
-.dark body {
-  background-color: #1f2937; /* Tailwind's gray-800 (dark mode) */
-}
-
-body {
+  height: 100%;
   margin: 0;
-  min-width: 320px;
+  padding: 0;
+  overflow-x: hidden;
 }
+
