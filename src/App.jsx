@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { Outlet } from 'react-router';
+import setVh from './utils/setVh.js';
 import Navbar from './components/ui/Navbar.jsx';
 import { ThemeProvider } from './context/theme/ThemeContext.jsx';
 import { BookmarksProvider } from './context/bookmarks/BookmarksContext.jsx';
@@ -6,6 +8,16 @@ import { AuthProvider } from './context/auth/AuthContext.jsx';
 import Footer from './components/ui/Footer.jsx';
 
 function App() {
+  useEffect(() => {
+    setVh();
+    window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
+    return () => {
+      window.removeEventListener('resize', setVh);
+      window.removeEventListener('orientationchange', setVh);
+    };
+  }, []);
+
   return (
     <ThemeProvider>
       <AuthProvider>
