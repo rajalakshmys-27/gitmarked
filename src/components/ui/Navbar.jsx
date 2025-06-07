@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import ThemeToggle from './ThemeToggle';
 import { useAuth } from '../../context/auth/useAuth';
+import { ProfileIcon } from '../../icons/index';
 
 function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
     const { user, logout } = useAuth();
 
     // Hide menu when route changes
@@ -59,13 +61,20 @@ function Navbar() {
                             </Link>
                             <div className="flex items-center gap-3 bg-gray-100/60 dark:bg-gray-800/60 px-3 py-1 rounded-full shadow-inner">
                                 <span className="text-gray-700 dark:text-gray-200 text-sm">
-                                    Welcome, <span className="font-semibold text-blue-600 dark:text-blue-400">{user.email}</span>
+                                    Welcome, <span className="font-semibold text-blue-600 dark:text-blue-400">{user.displayName ? user.displayName.split(' ')[0] : user.email}</span>
                                 </span>
                                 <button
                                     onClick={logout}
                                     className="px-4 py-1 rounded-full text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white/80 dark:bg-gray-900/80 hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-600 dark:hover:text-blue-400 shadow transition-colors duration-300"
                                 >
                                     Logout
+                                </button>
+                                <button
+                                    onClick={() => navigate('/profile')}
+                                    className="ml-2 flex items-center justify-center w-9 h-9 rounded-full bg-blue-200 dark:bg-blue-800 hover:bg-blue-300 dark:hover:bg-blue-700 transition-colors cursor-pointer"
+                                    title="Profile"
+                                >
+                                    <ProfileIcon />
                                 </button>
                             </div>
                         </>
@@ -108,8 +117,17 @@ function Navbar() {
                             {user ? (
                                 <>
                                     <div className="flex flex-row mt-2 items-center justify-between">
-                                        <span className="text-gray-700 dark:text-gray-200 text-base">Welcome, <span className="font-semibold text-blue-600 dark:text-blue-400">{user.email}</span></span>
-                                        <button onClick={logout} className="px-4 py-2 rounded text-base font-semibold text-gray-700 dark:text-gray-200 bg-white/80 dark:bg-gray-900/80 hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-600 dark:hover:text-blue-400 shadow transition-colors duration-300">Logout</button>
+                                        <span className="text-gray-700 dark:text-gray-200 text-base">Welcome, <span className="font-semibold text-blue-600 dark:text-blue-400">{user.displayName ? user.displayName.split(' ')[0] : user.email}</span></span>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => navigate('/profile')}
+                                                className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-200 dark:bg-blue-800 hover:bg-blue-300 dark:hover:bg-blue-700 transition-colors cursor-pointer"
+                                                title="Profile"
+                                            >
+                                                <ProfileIcon />
+                                            </button>
+                                            <button onClick={logout} className="px-4 py-2 rounded text-base font-semibold text-gray-700 dark:text-gray-200 bg-white/80 dark:bg-gray-900/80 hover:bg-blue-100 dark:hover:bg-blue-900 hover:text-blue-600 dark:hover:text-blue-400 shadow transition-colors duration-300">Logout</button>
+                                        </div>
                                     </div>
                                     <Link to="/dashboard" className={`block px-4 py-3 rounded text-lg font-semibold ${location.pathname === '/dashboard' ? 'text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'}`}>Dashboard</Link>
                                     <Link to="/bookmarks" className={`block px-4 py-3 rounded text-lg font-semibold ${location.pathname === '/bookmarks' ? 'text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'}`}>Bookmarks</Link>

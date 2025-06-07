@@ -30,6 +30,10 @@ export function AuthProvider({ children }) {
     await logOut();
   }, []);
 
+  const updateUser = useCallback((newUser) => {
+    setUser(newUser);
+  }, []);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -37,7 +41,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

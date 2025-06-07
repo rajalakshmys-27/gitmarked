@@ -5,6 +5,7 @@ import DashboardPage from '../pages/DashboardPage';
 import Bookmarks from '../pages/BookmarksPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
+import ProfilePage from '../pages/ProfilePage';
 import { ProtectedRoute } from '../components/auth/ProtectedRoute';
 import { PublicOnlyRoute } from '../components/auth/PublicOnlyRoute';
 
@@ -49,6 +50,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Bookmarks />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: 'profile',
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         )
       },

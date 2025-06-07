@@ -2,20 +2,26 @@
  * Firebase authentication service module
  * Handles all authentication-related logic.
  */
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
 import { app } from "./firebaseApp";
 
 export const auth = getAuth(app);
 
 /**
- * Sign up with email and password
+ * Sign up with email, password, first name, and last name
  * @param {string} email
  * @param {string} password
+ * @param {string} firstName
+ * @param {string} lastName
  * @returns {Promise<{user: object|null, error: object|null}>}
  */
-export const signUp = async (email, password) => {
+export const signUp = async (email, password, firstName, lastName) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // Set displayName as 'FirstName LastName'
+        await updateProfile(userCredential.user, {
+            displayName: `${firstName} ${lastName}`
+        });
         return { user: userCredential.user, error: null };
     } catch (error) {
         return { user: null, error: { code: error.code, message: error.message } };
