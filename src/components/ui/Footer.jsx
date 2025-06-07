@@ -17,7 +17,7 @@ function Footer() {
             </div>
             <div className="flex items-center gap-3 sm:gap-5 mt-2 md:mt-0">
                 <a
-                    href="https://www.linkedin.com/in/rajalakshmy-s-2709/"
+                    href="https://github.com/rajalakshmys-27"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="GitHub"

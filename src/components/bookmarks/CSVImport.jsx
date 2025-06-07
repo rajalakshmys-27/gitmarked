@@ -1,7 +1,7 @@
 import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { useBookmarks } from '../../context/bookmarks/useBookmarks';
 import { useAuth } from '../../context/auth/useAuth';
-import { batchAddBookmarks } from '../../services/firebase.js';
+import { batchAddBookmarks } from '../../services/firestore.js';
 
 function CSVImport(props, ref) {
   const { bookmarks } = useBookmarks();

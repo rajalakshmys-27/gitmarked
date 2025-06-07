@@ -1,15 +1,7 @@
 /**
- * Firebase service module for authentication and Firestore operations
- * All Firebase-related logic is centralized here for maintainability.
+ * Firebase Firestore service module for bookmark operations
+ * Handles all Firestore-related logic for bookmarks.
  */
-import { initializeApp } from "firebase/app";
-import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut
-} from "firebase/auth";
 import {
     getFirestore,
     doc,
@@ -24,81 +16,15 @@ import {
     orderBy,
     startAfter
 } from "firebase/firestore";
-import { config } from '../config/config';
+import { app } from "./firebaseApp";
 
-// Firebase configuration
-const firebaseConfig = config.firebase;
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// ===================== AUTH FUNCTIONS =====================
-/**
- * Sign up with email and password
- * @param {string} email
- * @param {string} password
- * @returns {Promise<{user: object|null, error: object|null}>}
- */
-export const signUp = async (email, password) => {
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        return { user: userCredential.user, error: null };
-    } catch (error) {
-        return { user: null, error: { code: error.code, message: error.message } };
-    }
-};
-
-/**
- * Sign in with email and password
- * @param {string} email
- * @param {string} password
- * @returns {Promise<{user: object|null, error: object|null}>}
- */
-export const signIn = async (email, password) => {
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        return { user: userCredential.user, error: null };
-    } catch (error) {
-        return { user: null, error: { code: error.code, message: error.message } };
-    }
-};
-
-/**
- * Sign out current user
- * @returns {Promise<{error: object|null}>}
- */
-export const logOut = async () => {
-    try {
-        await signOut(auth);
-        return { error: null };
-    } catch (error) {
-        return { error: { code: error.code, message: error.message } };
-    }
-};
-
-/**
- * Subscribe to auth state changes
- * @param {function} callback
- * @returns {function} unsubscribe
- */
-export const subscribeToAuthChanges = (callback) => {
-    return onAuthStateChanged(auth, (user) => callback(user));
-};
-
-/**
- * Get current user
- * @returns {object|null}
- */
-export const getCurrentUser = () => auth.currentUser;
-
-// ===================== BOOKMARK FUNCTIONS =====================
 /**
  * Add a bookmark for a user
  * @param {string} userId
- * @param {object} repo
- * @returns {Promise<{success: boolean, error?: object}>}
+ * @param {{ id: string|number, name: string, full_name: string, html_url: string, description: string, language: string }} repo
+ * @returns {Promise<{success: boolean, error?: { code: string, message: string }}>} 
  */
 export const addBookmark = async (userId, repo) => {
     try {
@@ -113,14 +39,14 @@ export const addBookmark = async (userId, repo) => {
         });
         return { success: true };
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: { code: error.code, message: error.message } };
     }
 };
 
 /**
  * Get all bookmarks for a user
  * @param {string} userId
- * @returns {Promise<{success: boolean, data?: object[], error?: object}>}
+ * @returns {Promise<{success: boolean, data?: object[], error?: { code: string, message: string }}>} 
  */
 export const getUserBookmarks = async (userId) => {
     try {
@@ -131,7 +57,7 @@ export const getUserBookmarks = async (userId) => {
             data: snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
         };
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: { code: error.code, message: error.message } };
     }
 };
 
@@ -139,7 +65,7 @@ export const getUserBookmarks = async (userId) => {
  * Remove a bookmark for a user
  * @param {string} userId
  * @param {string|number} repoId
- * @returns {Promise<{success: boolean, error?: object}>}
+ * @returns {Promise<{success: boolean, error?: { code: string, message: string }}>} 
  */
 export const removeBookmark = async (userId, repoId) => {
     try {
@@ -147,7 +73,7 @@ export const removeBookmark = async (userId, repoId) => {
         await deleteDoc(repoRef);
         return { success: true };
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: { code: error.code, message: error.message } };
     }
 };
 
@@ -155,7 +81,7 @@ export const removeBookmark = async (userId, repoId) => {
  * Check if a repo is bookmarked
  * @param {string} userId
  * @param {string|number} repoId
- * @returns {Promise<{success: boolean, exists?: boolean, error?: object}>}
+ * @returns {Promise<{success: boolean, exists?: boolean, error?: { code: string, message: string }}>} 
  */
 export const isRepoBookmarked = async (userId, repoId) => {
     try {
@@ -163,16 +89,16 @@ export const isRepoBookmarked = async (userId, repoId) => {
         const docSnap = await getDoc(repoRef);
         return { success: true, exists: docSnap.exists() };
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: { code: error.code, message: error.message } };
     }
 };
 
 /**
  * Get paginated bookmarks for a user
  * @param {string} userId
- * @param {number} limit
+ * @param {number} [limit=10]
  * @param {object|null} lastDoc
- * @returns {Promise<{success: boolean, data?: object[], lastVisible?: object, hasMore?: boolean, error?: object}>}
+ * @returns {Promise<{success: boolean, data?: object[], lastVisible?: object, hasMore?: boolean, error?: { code: string, message: string }}>} 
  */
 export const getPaginatedBookmarks = async (userId, limit = 10, lastDoc = null) => {
     try {
@@ -187,15 +113,15 @@ export const getPaginatedBookmarks = async (userId, limit = 10, lastDoc = null) 
             hasMore: snapshot.docs.length === limit
         };
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: { code: error.code, message: error.message } };
     }
 };
 
 /**
  * Batch add bookmarks for a user
  * @param {string} userId
- * @param {object[]} repos
- * @returns {Promise<{success: boolean, error?: object}>}
+ * @param {Array<{ id: string|number, name: string, full_name: string, html_url: string, description: string, language: string }>} repos
+ * @returns {Promise<{success: boolean, error?: { code: string, message: string }}>} 
  */
 export const batchAddBookmarks = async (userId, repos) => {
     try {
@@ -214,7 +140,7 @@ export const batchAddBookmarks = async (userId, repos) => {
         await batch.commit();
         return { success: true };
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: { code: error.code, message: error.message } };
     }
 };
 
@@ -223,7 +149,7 @@ export const batchAddBookmarks = async (userId, repos) => {
  * @param {string} userId
  * @param {string|number} repoId
  * @param {object} metadata
- * @returns {Promise<{success: boolean, error?: object}>}
+ * @returns {Promise<{success: boolean, error?: { code: string, message: string }}>} 
  */
 export const updateBookmarkMetadata = async (userId, repoId, metadata) => {
     try {
@@ -234,6 +160,6 @@ export const updateBookmarkMetadata = async (userId, repoId, metadata) => {
         });
         return { success: true };
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: { code: error.code, message: error.message } };
     }
 };

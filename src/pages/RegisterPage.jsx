@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
-import { signUp } from '../services/firebase.js';
+import { signUp } from '../services/auth.js';
 import { useAuth } from '../context/auth/useAuth';
 
 const RegisterPage = () => {

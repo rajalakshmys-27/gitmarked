@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { AuthContext } from './auth-context.js';
-import { signIn, logOut, subscribeToAuthChanges } from '../../services/firebase.js';
+import { signIn, logOut, subscribeToAuthChanges } from '../../services/auth.js';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);

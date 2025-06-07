@@ -6,7 +6,7 @@ import {
   removeBookmark as removeBookmarkFromFirebase,
   getUserBookmarks as getFirebaseBookmarks,
   isRepoBookmarked as checkRepoBookmarked
-} from '../../services/firebase.js';
+} from '../../services/firestore.js';
 
 export function BookmarksProvider({ children }) {
   const [bookmarks, setBookmarks] = useState([]);
