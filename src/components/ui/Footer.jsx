@@ -12,7 +12,7 @@ function Footer() {
             </div>
             <div className="flex flex-1 items-center justify-center">
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Built with <span className="text-pink-500">❤️</span> using React &amp; Vite
+                    Built with <span className="text-pink-500">❤️</span> using React &amp; Vite · 🔥 Powered by Firebase
                 </span>
             </div>
             <div className="flex items-center gap-3 sm:gap-5 mt-2 md:mt-0">
