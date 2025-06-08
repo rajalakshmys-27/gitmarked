@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router';
 import { useAuth } from '../context/auth/useAuth';
+import { sendResetPasswordEmail } from '../services/auth.js';
+import { Dialog, DialogTitle } from '@headlessui/react';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [showForgot, setShowForgot] = useState(false);
+    const [forgotEmail, setForgotEmail] = useState('');
+    const [forgotStatus, setForgotStatus] = useState('');
+    const [forgotLoading, setForgotLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -22,6 +28,19 @@ function LoginPage() {
         } else {
             setError('Invalid email or password');
         }
+    };
+
+    const handleForgotPassword = async (e) => {
+        e.preventDefault();
+        setForgotStatus('');
+        setForgotLoading(true);
+        const { success, error } = await sendResetPasswordEmail(forgotEmail);
+        if (success) {
+            setForgotStatus('A password reset link has been sent to your email.');
+        } else {
+            setForgotStatus(error?.message || 'Failed to send reset email.');
+        }
+        setForgotLoading(false);
     };
 
     return (
@@ -78,6 +97,11 @@ function LoginPage() {
                     >
                         Login
                     </button>
+                    <div className="flex justify-between items-center">
+                        <div className="text-sm">
+                            <button type="button" onClick={() => setShowForgot(true)} className="text-blue-600 hover:underline dark:text-blue-400">Forgot Password?</button>
+                        </div>
+                    </div>
                     <div className="text-center text-sm text-gray-600 dark:text-gray-400">
                         Don't have an account?{' '}
                         <Link to="/register" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
@@ -86,6 +110,32 @@ function LoginPage() {
                     </div>
                 </form>
             </div>
+            {/* Forgot Password Modal */}
+            <Dialog open={showForgot} onClose={() => setShowForgot(false)} className="fixed z-10 inset-0 overflow-y-auto">
+                <div className="flex items-center justify-center min-h-screen px-4">
+                    <div className="fixed inset-0 bg-black opacity-30" aria-hidden="true" />
+                    <div className="relative bg-white dark:bg-gray-900 rounded-xl shadow-xl p-8 w-full max-w-md mx-auto z-20">
+                        <DialogTitle className="text-lg font-bold mb-2 text-gray-900 dark:text-white">Reset Password</DialogTitle>
+                        <form onSubmit={handleForgotPassword} className="space-y-4">
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                value={forgotEmail}
+                                onChange={e => setForgotEmail(e.target.value)}
+                                className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                            />
+                            {forgotStatus && <div className={`text-sm ${forgotStatus.includes('sent') ? 'text-green-600' : 'text-red-500'}`}>{forgotStatus}</div>}
+                            <div className="flex gap-2 justify-end">
+                                <button type="button" onClick={() => setShowForgot(false)} className="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-300 dark:hover:bg-gray-600">Cancel</button>
+                                <button type="submit" disabled={forgotLoading} className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60">
+                                    {forgotLoading ? 'Sending...' : 'Send Reset Link'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </Dialog>
         </div>
     );
 }

@@ -2,7 +2,7 @@
  * Firebase authentication service module
  * Handles all authentication-related logic.
  */
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendEmailVerification } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendEmailVerification, sendPasswordResetEmail, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from "firebase/auth";
 import { app } from "./firebaseApp";
 
 export const auth = getAuth(app);
@@ -93,4 +93,36 @@ export const sendVerificationEmail = async () => {
  */
 export const isEmailVerified = () => {
     return auth.currentUser?.emailVerified || false;
+};
+
+/**
+ * Send password reset email
+ * @param {string} email
+ * @returns {Promise<{success: boolean, error: object|null}>}
+ */
+export const sendResetPasswordEmail = async (email) => {
+    try {
+        await sendPasswordResetEmail(auth, email);
+        return { success: true, error: null };
+    } catch (error) {
+        return { success: false, error: { code: error.code, message: error.message } };
+    }
+};
+
+/**
+ * Change password for current user (requires re-authentication)
+ * @param {string} currentPassword
+ * @param {string} newPassword
+ * @returns {Promise<{success: boolean, error: object|null}>}
+ */
+export const changePassword = async (currentPassword, newPassword) => {
+    try {
+        if (!auth.currentUser || !auth.currentUser.email) throw new Error('No user logged in');
+        const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
+        await reauthenticateWithCredential(auth.currentUser, credential);
+        await updatePassword(auth.currentUser, newPassword);
+        return { success: true, error: null };
+    } catch (error) {
+        return { success: false, error: { code: error.code, message: error.message } };
+    }
 };

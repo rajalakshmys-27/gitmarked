@@ -2,7 +2,6 @@ import UserReposList from '../repos/UserReposList.jsx';
 import { DocumentMagnify, TrashIcon } from '../../icons';
 
 export default function SearchResults({ selectedUser, onClear }) {
-  console.log("Rendering SearchResults with selectedUser:", selectedUser);
   return (
     <section className="flex-1 bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 min-h-[350px] border border-slate-100 dark:border-gray-800 transition-colors duration-300">
       <div className="flex items-center gap-2 mb-4 justify-between">
