@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import ThemeToggle from './ThemeToggle';
 import { useAuth } from '../../context/auth/useAuth';
-import { ProfileIcon } from '../../icons/index';
+import { ProfileIcon, MenuIcon, CloseIcon } from '../../icons/index';
 
 function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -28,9 +28,7 @@ function Navbar() {
                         aria-label="Open menu"
                         onClick={() => setMenuOpen((v) => !v)}
                     >
-                        <svg className="w-7 h-7 text-blue-700 dark:text-blue-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
+                        <MenuIcon className="w-7 h-7 text-blue-700 dark:text-blue-300" />
                     </button>
                 </div>
             </div>
@@ -109,9 +107,7 @@ function Navbar() {
                             aria-label="Close menu"
                             onClick={() => setMenuOpen(false)}
                         >
-                            <svg className="w-7 h-7 text-blue-700 dark:text-blue-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <CloseIcon className="w-7 h-7 text-blue-700 dark:text-blue-300" />
                         </button>
                         <div className="flex flex-col gap-6 mt-16 pt-4 px-6 bg-gray-100/90 dark:bg-gray-800/90">
                             {user ? (
