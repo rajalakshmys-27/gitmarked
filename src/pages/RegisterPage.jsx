@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
-import { signUp, sendVerificationEmail } from '../services/auth.js';
-import { EyeIcon, EyeOffIcon, MailIcon } from '../icons';
+import { Link, useNavigate } from 'react-router';
+import { signUp } from '../services/auth.js';
+import { EyeIcon, EyeOffIcon } from '../icons';
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
-  const [verificationSent, setVerificationSent] = useState(false);
-  const [resendLoading, setResendLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,42 +21,10 @@ const RegisterPage = () => {
     if (signUpError) {
       setError(signUpError.message);
       return;
-    }
-
-    if (user) {
-      setVerificationSent(true);
+    }    if (user) {
+      navigate('/verify-email');
     }
   };
-
-  const handleResendVerification = async () => {
-    setResendLoading(true);
-    setError(null);
-    const { success, error } = await sendVerificationEmail();
-    if (!success && error) setError(error.message);
-    setResendLoading(false);
-  };
-
-  if (verificationSent) {
-    return (
-      <div className="min-h-screen flex flex-col justify-center items-center px-2 sm:px-4 md:px-8">
-        <div className="w-full max-w-xs sm:max-w-md bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-xl p-4 sm:p-8 backdrop-blur-lg border border-gray-200 dark:border-gray-800 flex flex-col items-center">
-          <MailIcon className="w-16 h-16 text-blue-500 mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2 text-center">Verify your email</h2>
-          <p className="text-gray-600 dark:text-gray-300 text-center mb-4">A verification link has been sent to <span className="font-semibold">{email}</span>. Please check your inbox and verify your email to continue.</p>
-          <button
-            type="button"
-            onClick={handleResendVerification}
-            disabled={resendLoading}
-            className="w-full py-2 px-4 rounded-md bg-blue-600 dark:bg-blue-500 text-white font-semibold shadow hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:opacity-60 mb-2"
-          >
-            {resendLoading ? 'Resending...' : 'Resend Verification Email'}
-          </button>
-          <Link to="/login" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm">Back to Login</Link>
-          {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-2 sm:px-4 md:px-8">

@@ -6,6 +6,7 @@ import Bookmarks from '../pages/BookmarksPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import ProfilePage from '../pages/ProfilePage';
+import EmailVerificationPage from '../pages/EmailVerificationPage';
 import { ProtectedRoute } from '../components/auth/ProtectedRoute';
 import { PublicOnlyRoute } from '../components/auth/PublicOnlyRoute';
 
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
           <PublicOnlyRoute>
             <RegisterPage />
           </PublicOnlyRoute>
+        ),
+      },
+      {
+        path: 'verify-email',
+        element: (
+          <ProtectedRoute>
+            <EmailVerificationPage />
+          </ProtectedRoute>
         ),
       },
       {
