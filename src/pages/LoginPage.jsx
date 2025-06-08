@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router';
 import { useAuth } from '../context/auth/useAuth';
 import { sendResetPasswordEmail } from '../services/auth.js';
 import { Dialog, DialogTitle } from '@headlessui/react';
-import { EyeIcon, EyeOffIcon } from '../icons';
+import { EyeIcon, EyeOffIcon, GoogleIcon, GithubIcon } from '../icons';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
@@ -14,7 +14,7 @@ function LoginPage() {
     const [forgotEmail, setForgotEmail] = useState('');
     const [forgotStatus, setForgotStatus] = useState('');
     const [forgotLoading, setForgotLoading] = useState(false);
-    const { login } = useAuth();
+    const { login, loginWithGoogle, loginWithGithub } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -30,6 +30,36 @@ function LoginPage() {
             setError('Invalid email or password');
         }
     };
+
+    const handleSocialLogin = async (provider) => {
+        setError('');
+        try {
+            const signInMethod = provider === 'google' ? loginWithGoogle : loginWithGithub;
+            const success = await signInMethod();
+            
+            if (success) {
+                // Redirect to the page they were trying to access, or dashboard
+                const from = location.state?.from?.pathname || '/dashboard';
+                navigate(from);
+            } else {
+                setError(`Failed to sign in with ${provider === 'google' ? 'Google' : 'GitHub'}. Please try again.`);
+            }
+        } catch (err) {
+            console.error(`${provider} login error:`, err);
+            if (err.code === 'auth/popup-blocked') {
+                setError('Sign in popup was blocked. Please allow popups for this site.');
+            } else if (err.code === 'auth/cancelled-popup-request') {
+                setError('Sign in was cancelled.');
+            } else if (err.code === 'auth/account-exists-with-different-credential') {
+                setError('An account already exists with the same email address but different sign-in credentials. Please sign in using the original method.');
+            } else {
+                setError(`An error occurred during ${provider === 'google' ? 'Google' : 'GitHub'} sign in. Please try again.`);
+            }
+        }
+    };
+
+    const handleGoogleLogin = () => handleSocialLogin('google');
+    const handleGithubLogin = () => handleSocialLogin('github');
 
     const handleForgotPassword = async (e) => {
         e.preventDefault();
@@ -93,6 +123,35 @@ function LoginPage() {
                     >
                         Login
                     </button>
+
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400">Or continue with</span>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <button
+                            type="button"
+                            onClick={handleGoogleLogin}
+                            className="flex items-center justify-center py-2.5 px-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300"
+                        >
+                            <GoogleIcon />
+                            <span className="ml-2 text-gray-700 dark:text-gray-300">Google</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleGithubLogin}
+                            className="flex items-center justify-center py-2.5 px-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300"
+                        >
+                            <GithubIcon />
+                            <span className="ml-2 text-gray-700 dark:text-gray-300">GitHub</span>
+                        </button>
+                    </div>
+
                     <div className="flex justify-between items-center">
                         <div className="text-sm">
                             <button type="button" onClick={() => setShowForgot(true)} className="text-blue-600 hover:underline dark:text-blue-400">Forgot Password?</button>
@@ -106,6 +165,7 @@ function LoginPage() {
                     </div>
                 </form>
             </div>
+
             {/* Forgot Password Modal */}
             <Dialog open={showForgot} onClose={() => setShowForgot(false)} className="fixed z-10 inset-0 overflow-y-auto">
                 <div className="flex items-center justify-center min-h-screen px-4">

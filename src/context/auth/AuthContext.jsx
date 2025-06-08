@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { AuthContext } from './auth-context.js';
-import { signIn, logOut, subscribeToAuthChanges } from '../../services/auth.js';
+import { signIn, logOut, subscribeToAuthChanges, signInWithGoogle, signInWithGithub } from '../../services/auth.js';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -25,6 +25,22 @@ export function AuthProvider({ children }) {
       return false;
     }
   }, []);
+  const loginWithGoogle = useCallback(async () => {
+    try {
+      const { error } = await signInWithGoogle();
+      return !error;
+    } catch {
+      return false;
+    }
+  }, []);
+  const loginWithGithub = useCallback(async () => {
+    try {
+      const { error } = await signInWithGithub();
+      return !error;
+    } catch {
+      return false;
+    }
+  }, []);
 
   const logout = useCallback(async () => {
     await logOut();
@@ -41,7 +57,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateUser, loading }}>
+    <AuthContext.Provider value={{ user, login, loginWithGoogle, loginWithGithub, logout, updateUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

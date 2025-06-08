@@ -2,10 +2,42 @@
  * Firebase authentication service module
  * Handles all authentication-related logic.
  */
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendEmailVerification, sendPasswordResetEmail, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from "firebase/auth";
+import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    onAuthStateChanged, 
+    signOut, 
+    updateProfile, 
+    sendEmailVerification, 
+    sendPasswordResetEmail, 
+    reauthenticateWithCredential, 
+    EmailAuthProvider, 
+    updatePassword,
+    GoogleAuthProvider,
+    GithubAuthProvider,
+    signInWithPopup
+} from "firebase/auth";
 import { app } from "./firebaseApp";
 
 export const auth = getAuth(app);
+
+// Configure Google provider with all necessary scopes
+const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('profile');
+googleProvider.addScope('email');
+googleProvider.setCustomParameters({
+    prompt: 'select_account' // Always show Google account picker
+});
+
+// Configure GitHub provider with all necessary scopes
+const githubProvider = new GithubAuthProvider();
+githubProvider.addScope('user');
+githubProvider.addScope('user:email');
+githubProvider.addScope('read:user');
+githubProvider.setCustomParameters({
+    prompt: 'consent' // Always show GitHub consent screen
+});
 
 /**
  * Sign up with email, password, first name, and last name
@@ -124,5 +156,118 @@ export const changePassword = async (currentPassword, newPassword) => {
         return { success: true, error: null };
     } catch (error) {
         return { success: false, error: { code: error.code, message: error.message } };
+    }
+};
+
+/**
+ * Sign in with Google
+ * @returns {Promise<{user: object|null, error: object|null}>}
+ */
+export const signInWithGoogle = async () => {
+    try {
+        const result = await signInWithPopup(auth, googleProvider);
+        return { user: result.user, error: null };
+    } catch (error) {
+        console.error('Google sign in error:', error);
+        
+        if (error.code === 'auth/account-exists-with-different-credential') {
+            return { 
+                user: null, 
+                error: { 
+                    code: error.code, 
+                    message: 'An account already exists with the same email address but different sign-in credentials. Please sign in using the original method.' 
+                } 
+            };
+        }
+        
+        if (error.code === 'auth/popup-blocked') {
+            return { 
+                user: null, 
+                error: { 
+                    code: error.code, 
+                    message: 'Popup was blocked. Please allow popups for this site.' 
+                } 
+            };
+        }
+        
+        if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+            return { 
+                user: null, 
+                error: { 
+                    code: error.code, 
+                    message: 'Sign in was cancelled.' 
+                } 
+            };
+        }
+        
+        return { 
+            user: null, 
+            error: { 
+                code: error.code, 
+                message: error.message || 'An error occurred during Google sign in.' 
+            } 
+        };
+    }
+};
+
+/**
+ * Sign in with GitHub
+ * @returns {Promise<{user: object|null, error: object|null}>}
+ */
+export const signInWithGithub = async () => {
+    try {
+        const result = await signInWithPopup(auth, githubProvider);
+        
+        // Handle cases where the user might not have a public email
+        if (!result.user.email) {
+            const credential = GithubAuthProvider.credentialFromResult(result);
+            if (credential?.accessToken) {
+                // You might want to make a GitHub API call here to get the private email
+                console.log('No public email available from GitHub');
+            }
+        }
+        
+        return { user: result.user, error: null };
+    } catch (error) {
+        console.error('GitHub sign in error:', error);
+        
+        if (error.code === 'auth/account-exists-with-different-credential') {
+            // Handle linking accounts here if needed
+            return { 
+                user: null, 
+                error: { 
+                    code: error.code, 
+                    message: 'An account already exists with the same email address but different sign-in credentials. Please sign in using the original method.' 
+                } 
+            };
+        }
+        
+        if (error.code === 'auth/popup-blocked') {
+            return { 
+                user: null, 
+                error: { 
+                    code: error.code, 
+                    message: 'Popup was blocked. Please allow popups for this site.' 
+                } 
+            };
+        }
+        
+        if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+            return { 
+                user: null, 
+                error: { 
+                    code: error.code, 
+                    message: 'Sign in was cancelled.' 
+                } 
+            };
+        }
+        
+        return { 
+            user: null, 
+            error: { 
+                code: error.code, 
+                message: error.message || 'An error occurred during GitHub sign in.' 
+            } 
+        };
     }
 };

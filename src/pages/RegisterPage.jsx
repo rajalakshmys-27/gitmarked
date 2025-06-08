@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { signUp } from '../services/auth.js';
-import { EyeIcon, EyeOffIcon } from '../icons';
+import { signUp, auth } from '../services/auth.js';
+import { useAuth } from '../context/auth/useAuth';
+import { EyeIcon, EyeOffIcon, GoogleIcon, GithubIcon } from '../icons';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const RegisterPage = () => {
   const [lastName, setLastName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
+  const { loginWithGoogle, loginWithGithub } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,15 +23,73 @@ const RegisterPage = () => {
     if (signUpError) {
       setError(signUpError.message);
       return;
-    }    if (user) {
+    }    
+    if (user) {
       navigate('/verify-email');
     }
   };
+  const handleSocialSignUp = async (provider) => {
+    setError(null);
+    const signInMethod = provider === 'google' ? loginWithGoogle : loginWithGithub;
+    const success = await signInMethod();
+    
+    if (success) {
+      const user = auth.currentUser;
+      if (user) {
+        // Check if this is their first sign in (new user)
+        const isNewUser = user.metadata.creationTime === user.metadata.lastSignInTime;
+        
+        if (isNewUser && !user.emailVerified) {
+          // For new users, send them to email verification
+          navigate('/verify-email');
+        } else {
+          // For existing users, send them to dashboard
+          navigate('/dashboard');
+        }
+      }
+    } else {
+      setError(`Failed to sign up with ${provider === 'google' ? 'Google' : 'GitHub'}`);
+    }
+  };
+
+  const handleGoogleLogin = () => handleSocialSignUp('google');
+  const handleGithubLogin = () => handleSocialSignUp('github');
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center px-2 sm:px-4 md:px-8">
       <div className="w-full max-w-xs sm:max-w-md bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-xl p-4 sm:p-8 backdrop-blur-lg border border-gray-200 dark:border-gray-800">
         <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center text-gray-900 dark:text-white">Register</h1>
+        
+        <div className="mb-6">
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="flex items-center justify-center py-2.5 px-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300"
+            >
+              <GoogleIcon />
+              <span className="ml-2 text-gray-700 dark:text-gray-300">Google</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleGithubLogin}
+              className="flex items-center justify-center py-2.5 px-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300"
+            >
+              <GithubIcon />
+              <span className="ml-2 text-gray-700 dark:text-gray-300">GitHub</span>
+            </button>
+          </div>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400">Or register with email</span>
+            </div>
+          </div>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div>
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
