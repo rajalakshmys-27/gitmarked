@@ -82,3 +82,12 @@ export function ProfileIcon() {
         </svg>
     );
 }
+
+export function VerificationIcon() {
+    return (
+        <svg className="w-14 h-14 text-green-600 mb-2 animate-bounce-in" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" className="stroke-green-300 dark:stroke-green-700" strokeWidth="2" fill="white" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7 13l3 3 7-7" className="stroke-green-600" strokeWidth="2.5" />
+        </svg>
+    )
+}

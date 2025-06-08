@@ -33,3 +33,13 @@
 .read-the-docs {
   color: #888;
 }
+
+.animate-bounce-in {
+  animation: bounce-in 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+}
+@keyframes bounce-in {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.2); opacity: 1; }
+  80% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}

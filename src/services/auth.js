@@ -2,7 +2,7 @@
  * Firebase authentication service module
  * Handles all authentication-related logic.
  */
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendEmailVerification } from "firebase/auth";
 import { app } from "./firebaseApp";
 
 export const auth = getAuth(app);
@@ -22,6 +22,8 @@ export const signUp = async (email, password, firstName, lastName) => {
         await updateProfile(userCredential.user, {
             displayName: `${firstName} ${lastName}`
         });
+        // Send verification email after registration
+        await sendEmailVerification(userCredential.user);
         return { user: userCredential.user, error: null };
     } catch (error) {
         return { user: null, error: { code: error.code, message: error.message } };
@@ -70,3 +72,25 @@ export const subscribeToAuthChanges = (callback) => {
  * @returns {object|null}
  */
 export const getCurrentUser = () => auth.currentUser;
+
+/**
+ * Send email verification to the current user
+ * @returns {Promise<{success: boolean, error: object|null}>}
+ */
+export const sendVerificationEmail = async () => {
+    try {
+        if (!auth.currentUser) throw new Error('No user logged in');
+        await sendEmailVerification(auth.currentUser);
+        return { success: true, error: null };
+    } catch (error) {
+        return { success: false, error: { code: error.code, message: error.message } };
+    }
+};
+
+/**
+ * Check if current user's email is verified
+ * @returns {boolean}
+ */
+export const isEmailVerified = () => {
+    return auth.currentUser?.emailVerified || false;
+};
